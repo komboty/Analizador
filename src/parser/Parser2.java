@@ -282,13 +282,13 @@ public class Parser2 {
     
     //<factor_simple> → id | entero
     private void factor_simple() {
-//        if (sc.hasNextLine()){
-//            token = sc.nextLine();
-//            System.out.println("leido <factor_simple>: " + token);        
+        if (sc.hasNextLine()){
+            token = sc.nextLine();
+            System.out.println("leido <factor_simple>: " + token);        
             if (token.charAt(0) == '3' || token.charAt(0) == '1') {
                 return;
             }
-//        }
+        }
         //si no es Leer ó Escribir.
         Error("<factor_simple>", "Identificador o´ Constante entera");
     }

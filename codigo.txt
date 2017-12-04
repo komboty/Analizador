@@ -1,4 +1,4 @@
 Inicio 
 	a1 ;
-	a1 :=  ;
+	Mientras a < 1 
 Fin  

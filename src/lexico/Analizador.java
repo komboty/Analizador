@@ -46,7 +46,7 @@ public class Analizador {
 		}
                 
                 //Se lee un caracter en el archivo y se guarada en tecla.
-                tecla = (char)fr.read();
+                tecla = (char)fr.read();                
                                 
                 if(tecla == ' ' || tecla == '\n'){
                     
@@ -80,6 +80,11 @@ public class Analizador {
                             valor = String.valueOf(posicionTabla - 1);
                             Archivo.GuardarToken(clase, valor);
                         }
+                    }
+                    
+                    if (estado == 'D'){
+                        clase = 6;	
+                        Archivo.GuardarToken(clase, valor); 
                     }
                                         
                     estado = 'I';
@@ -174,6 +179,7 @@ public class Analizador {
                     break;
 
                     case 'D':
+                        //System.out.println(valor+"lexico.Analizador.generar()" + tecla);
                         //Si el caracter leído anteriormente es: >, <, y el caracter leído actualmente es =
                         //se guarada el token y se regresa al caso I.
                         if (tecla == '='){
@@ -186,59 +192,60 @@ public class Analizador {
                         }
                         //Si el caracter leído anteriormente es: >, <, y el caracter leído actualmente no es =
                         //se verifica que caracter es para asi guardarlo o irse a otro caso.
-                        else{
-                            clase = 6;					
-                            Archivo.GuardarToken(clase, valor); 
-
-                            if(Pattern.matches(digito, tecla + "")){
-                                estado = 'A';
-                                valor += tecla;
-                                break;
-                            }
-
-                            if(Pattern.matches(letra, tecla + "")){
-                                    estado = 'B';
-                                    valor += tecla;
-                                    break;
-                            }
-
-                            switch(tecla){
-                                case '(':
-                                case ')':
-                                case ',':
-                                case ';':
-                                        clase = 4;
-                                        valor = String.valueOf(tecla);
-                                        Archivo.GuardarToken(clase, valor);
-                                break;
-
-                                case '+':
-                                case '-':
-                                case '*':
-                                case '/':
-                                        clase = 5;
-                                        valor = String.valueOf(tecla);
-                                        Archivo.GuardarToken(clase, valor);
-                                break;
-
-                                case '=':
-                                        clase = 6;
-                                        valor = String.valueOf(tecla);
-                                        Archivo.GuardarToken(clase, valor);
-                                break;
-
-                                case '>':
-                                case '<':
-                                        estado = 'D';
-                                        valor += tecla;
-                                break;
-
-                                case ':':
-                                        estado = 'E';
-                                        valor += tecla;
-                                break;
-                            }
-                        }
+//                        else {
+//                            clase = 6;					
+//                            Archivo.GuardarToken(clase, valor); 
+//                            valor = "";
+//
+//                            if(Pattern.matches(digito, tecla + "")){
+//                                estado = 'A';
+//                                valor += tecla;
+//                                break;
+//                            }
+//
+//                            if(Pattern.matches(letra, tecla + "")){
+//                                    estado = 'B';
+//                                    valor += tecla;
+//                                    break;
+//                            }
+//
+//                            switch(tecla){
+//                                case '(':
+//                                case ')':
+//                                case ',':
+//                                case ';':
+//                                        clase = 4;
+//                                        valor = String.valueOf(tecla);
+//                                        Archivo.GuardarToken(clase, valor);
+//                                break;
+//
+//                                case '+':
+//                                case '-':
+//                                case '*':
+//                                case '/':
+//                                        clase = 5;
+//                                        valor = String.valueOf(tecla);
+//                                        Archivo.GuardarToken(clase, valor);
+//                                break;
+//
+//                                case '=':
+//                                        clase = 6;
+//                                        valor = String.valueOf(tecla);
+//                                        Archivo.GuardarToken(clase, valor);
+//                                break;
+//
+//                                case '>':
+//                                case '<':
+//                                        estado = 'D';
+//                                        valor += tecla;
+//                                break;
+//
+//                                case ':':
+//                                        estado = 'E';
+//                                        valor += tecla;
+//                                break;
+//                            }
+//                        }
                     break;	
 
                     case 'E':
