@@ -1,0 +1,10 @@
+1 Entonces 2
+2 Escribir 2
+3 Fin 2
+4 Hacer 2
+5 Inicio 2
+6 Leer 2
+7 Mientras 2
+8 Si 2
+9 Sino 2
+10 a1 3

@@ -1,0 +1,4 @@
+Inicio 
+	a1 ;
+	a1 :=  ;
+Fin  
