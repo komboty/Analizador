@@ -203,15 +203,15 @@ public class Parser2 {
                 System.out.println("leido <enunciado>4: " + token);
                 //si es dos puntos e igual.
                 if (token.charAt(0) == '7') {
-//                    expresion();
-                    if (sc.hasNextLine()){
-                        token = sc.nextLine();
-                        System.out.println("leido <enunciado>5: " + token);
+                    expresion();
+//                    if (sc.hasNextLine()){
+//                        token = sc.nextLine();
+//                        System.out.println("leido <enunciado>5: " + token);
                         //si es dos puntos e igual.
                         if (token.charAt(2) == ';') {
                             return;
                         }
-                    }
+//                    }
                     //si no hay más lineas por leer.
                     Error("<enunciado>", ";");
                     return;
@@ -241,9 +241,18 @@ public class Parser2 {
     
     //<condición> → <factor_simple> <op_rel> <factor_simple>
     private void condicion() {
-        factor_simple();
-        op_rel();
-        factor_simple();
+        if (sc.hasNextLine()){
+            token = sc.nextLine();
+            System.out.println("leido <condicion>: " + token);
+            factor_simple();
+            op_rel();
+            
+            if (sc.hasNextLine()){
+                token = sc.nextLine();
+                System.out.println("leido <condicion>2: " + token);
+                factor_simple();
+            }
+        }
     }
     
     //<op rel> → > | < | = | <= | >=
@@ -256,49 +265,167 @@ public class Parser2 {
             }
         }
         //si no es Leer ó Escribir.
-        //no lee <
         Error("<op_rel>", "> ó < ó = ó <= ó >=");
     }
     
+    //<expresión> → <término><expresión_simple>
     private void expresion() {
-        
+//        if (sc.hasNextLine()){
+//            token = sc.nextLine();
+//            System.out.println("leido <expresion>: " + token);
+            termino();
+            expresion_simple();
+//            return;
+//            
+//        }
+//        //si no hay más lineas.
+//        Error("<expresion>", "(");
     }
     
     private void expresion_simple() {
         
     }
     
-    private void término() {
-        
+    //<término> → <factor><término_simple>
+    private void termino() {
+        factor();
+        termino_simple();
     }
     
-    private void término_simple() {
+    //<término simple> → * <factor><término_simple> | / <factor><término_simple> | ε
+    private void termino_simple() {
+        if (sc.hasNextLine()){
+            token = sc.nextLine();
+            System.out.println("leido <termino_simple>: " + token);
+            //<término simple> → ε
+            if (token.charAt(2) == '+' || token.charAt(2) == '-' || token.charAt(2) == ')' || token.charAt(2) == ';') {
+                return;
+            }
+
+            //<término simple> → / <factor><término_simple> | * <factor><término_simple>
+            if (token.charAt(2) == '/' || token.charAt(2) == '*') {
+                factor();
+                termino_simple();
+                return;
+            }
+        }
         
+        //si no hay más lineas.
+        Error("<termino_simple>", "* ó / + ó - ó ) ó ; ");        
     }
     
+    //<factor> → ( <expresión> ) | <factor_simple>
     private void factor() {
-        
+        if (sc.hasNextLine()){
+            token = sc.nextLine();
+            System.out.println("leido <factor>: " + token);
+            
+            //<factor> → <factor_simple>
+            if (token.charAt(0) == '3' || token.charAt(0) == '1') {
+                factor_simple();
+                return;
+            }
+            
+            //<factor> → ( <expresión> )
+            if (token.charAt(2) == '(') {
+                expresion();                
+                
+//                if (sc.hasNextLine()){
+//                    token = sc.nextLine();
+//                    System.out.println("leido <factor>2: " + token);
+//                    
+                    //si es )
+                    if (token.charAt(2) == ')') {
+                        return;   
+                    }
+                    Error("<factor>", ")");
+                    return;
+//                }
+            }
+        }
+        //si no hay más lineas.
+        Error("<factor>", "( ó Identificador ó Constante entera");
     }
     
     //<factor_simple> → id | entero
     private void factor_simple() {
-        if (sc.hasNextLine()){
-            token = sc.nextLine();
-            System.out.println("leido <factor_simple>: " + token);        
+//        if (sc.hasNextLine()){
+//            token = sc.nextLine();
+//            System.out.println("leido <factor_simple>: " + token);        
             if (token.charAt(0) == '3' || token.charAt(0) == '1') {
                 return;
             }
-        }
+//        }
         //si no es Leer ó Escribir.
         Error("<factor_simple>", "Identificador o´ Constante entera");
     }
     
+    //<enunciado_if> → Si <condición> Entonces <enunciado><fin_if>
     private void enunciado_if() {
+        condicion();
         
+        if (sc.hasNextLine()){                            
+            token = sc.nextLine();
+            System.out.println("leido <enunciado_if>: " + token);        
+            
+            //si es Entonces.
+            int entonces[] = lexico.Archivo.VerificarTabla("Entonces");            
+            if (String.valueOf(token.charAt(2)).equals(String.valueOf(entonces[0]))){
+                if (sc.hasNextLine()){                            
+                    token = sc.nextLine();
+                    System.out.println("leido <enunciado_if>2: " + token);
+                    enunciado();
+                    
+                    if (sc.hasNextLine()){                            
+                        token = sc.nextLine();
+                        System.out.println("leido <enunciado_if>3: " + token);        
+
+                        fin_if();
+                        return;
+                        //Error("<enunciado_if>", "Fin");
+                    }    
+                }
+                //Error se esperaba Leer ó Escribir ó Identificador o´ Si ó Mientras
+                return;
+            }            
+        }
+        //si no es Si.
+        Error("<enunciado_if>", "Si");
     }
     
+    //<fin_if> → Fin | Sino <enunciado> Fin
     private void fin_if() {
+        //<fin_if> → Fin
+        int fin[] = lexico.Archivo.VerificarTabla("Fin");
+        if (String.valueOf(token.charAt(2)).equals(String.valueOf(fin[0]))) {
+            return;
+        }
         
+        //<fin_if> → Sino <enunciado> Fin
+        int sino[] = lexico.Archivo.VerificarTabla("Sino");
+        if (String.valueOf(token.charAt(2)).equals(String.valueOf(sino[0]))) {
+            if (sc.hasNextLine()){                            
+                token = sc.nextLine();
+                System.out.println("leido <fin_if>: " + token);
+                enunciado();
+
+                if (sc.hasNextLine()){                            
+                    token = sc.nextLine();
+                    System.out.println("leido <fin_if>2: " + token);        
+
+                    //si es Fin.
+                    //int fin[] = lexico.Archivo.VerificarTabla("Fin");            
+                    if (String.valueOf(token.charAt(2)).equals(String.valueOf(fin[0]))){
+                        return;
+                    }
+                    Error("<fin_if>", "Fin");
+                }
+                return;
+            }            
+        }
+        
+        //si no es Fin ó Sino.
+        Error("<fin_if>", "Fin ó Sino");
     }
     
     //<enunciado_while> → Mientras <condición> Hacer <enunciado> Fin
@@ -306,11 +433,38 @@ public class Parser2 {
 //        if (sc.hasNextLine()){
 //            token = sc.nextLine();
 //            System.out.println("leido <enunciado_while>: " + token);
-            condicion();            
-//            return;
-//        }
-//        //si no es Leer ó Escribir.
-//        Error("<enunciado_while>", "Identificador o´ Constante entera");
+        condicion();
+        
+        if (sc.hasNextLine()){                            
+            token = sc.nextLine();
+            System.out.println("leido <enunciado_while>: " + token);        
+            
+            //si es Hacer.
+            int hacer[] = lexico.Archivo.VerificarTabla("Hacer");            
+            if (String.valueOf(token.charAt(2)).equals(String.valueOf(hacer[0]))){
+                if (sc.hasNextLine()){                            
+                    token = sc.nextLine();
+                    System.out.println("leido <enunciado_while>2: " + token);
+                    enunciado();
+                    
+                    if (sc.hasNextLine()){                            
+                        token = sc.nextLine();
+                        System.out.println("leido <enunciado_while>3: " + token);        
+
+                        //si es Hacer.
+                        int fin[] = lexico.Archivo.VerificarTabla("Fin");            
+                        if (String.valueOf(token.charAt(2)).equals(String.valueOf(fin[0]))){
+                            return;
+                        }
+                        Error("<enunciado_while>", "Fin");
+                    }    
+                }
+                //Error se esperaba Leer ó Escribir ó Identificador o´ Si ó Mientras
+                return;
+            }            
+        }
+        //si no es Hacer.
+        Error("<enunciado_while>", "Hacer");
     }
     
     private void Error(String noTerminal, String error) {        
