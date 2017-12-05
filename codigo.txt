@@ -1,4 +1,23 @@
-Inicio 
-	a1 ;
-	a1 := 1 * 2 ; 
-Fin  
+ Inicio 
+   a , b , c ; 
+   a := 5 ; 
+   b := 10 ; 
+   c := a + b * a - a / b * a - b + 5 ; 
+   Leer a ; 
+   Escribir c ; 
+   Si a < b Entonces 
+     Si c >= a Entonces    
+       c := 2 * a - c + b ; 
+     Sino 
+       b := b - d * a - 10 ;     
+     Fin 
+   Sino 
+     Mientras r = b Hacer 
+       Mientras b > c Hacer 
+         Escribir c ; 
+       Fin 
+     Fin 
+   Fin 
+   Leer b ; 
+   Escribir c ; 
+ Fin  

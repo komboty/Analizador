@@ -7,4 +7,8 @@
 7 Mientras 2
 8 Si 2
 9 Sino 2
-10 a1 3
+10 a 3
+11 b 3
+12 c 3
+13 d 3
+14 r 3
